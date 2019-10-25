@@ -16,73 +16,74 @@ import com.j.sso.entity.SSOUser;
 
 /**
  * token 生成 加解密 校验
- * @author yizhishaonian
+ *
+ * @author yzsn
  */
 public class JwtTokenHelper {
 
-	private static final String userCliam = "extra";
-	
-	public static String createToken(SSOUser user) {
+    private static final String userClaim = "extra";
 
-		return String.format("%s%s", SSOConfiguration.LOGO,
-				JWT.create().withIssuer(SSOConfiguration.LOGO).withSubject(String.valueOf(user.getId()))
-						.withIssuedAt(new Date()).withJWTId(genJti()).withClaim(userCliam, JSON.toJSONString(user))
-						.sign(Algorithm.HMAC256(SSOConfiguration.SECRET_KEY)));
-	}
+    public static String createToken(SSOUser user) {
 
-	public static Boolean checkTokenInLaw(String token) {
+        return String.format("%s%s", SSOConfiguration.LOGO,
+                JWT.create().withIssuer(SSOConfiguration.LOGO).withSubject(String.valueOf(user.getId()))
+                        .withIssuedAt(new Date()).withJWTId(genJti()).withClaim(userClaim, JSON.toJSONString(user))
+                        .sign(Algorithm.HMAC256(SSOConfiguration.SECRET_KEY)));
+    }
 
-		if (!checkLogo(token)) {
-			
-			return false;
-		}
-		JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SSOConfiguration.SECRET_KEY)).build();
-		try {
-			
-			String jti = jwtVerifier.verify(subLogo(token)).getId();
-			if (!SSOJtiStore.contains(jti)) {
-				throw new JWTVerificationException("jti校验失败");
-			}
-			return true;
-		} catch (JWTVerificationException e) {
-			
-			return false;
-		}
-	}
+    public static Boolean checkTokenInLaw(String token) {
 
-	public static SSOUser getTokenSSOUser(String token) {
+        if (!checkLogo(token)) {
 
-		String other = decodeToken(token).getClaim(userCliam).asString();
-		return JSONObject.parseObject(other, SSOUser.class);
-	}
+            return false;
+        }
+        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SSOConfiguration.SECRET_KEY)).build();
+        try {
 
-	public static void logout(String token) {
+            String jti = jwtVerifier.verify(subLogo(token)).getId();
+            if (!SSOJtiStore.contains(jti)) {
+                throw new JWTVerificationException("jti校验失败");
+            }
+            return true;
+        } catch (JWTVerificationException e) {
 
-		SSOJtiStore.remove(decodeToken(token).getId());
-	}
+            return false;
+        }
+    }
 
-	private JwtTokenHelper() {
-	}
-	
-	private static String genJti() {
+    public static SSOUser getTokenSSOUser(String token) {
 
-		String jti = UUID.randomUUID().toString();
-		SSOJtiStore.add(jti);
-		return jti;
-	}
-	
-	private static boolean checkLogo(String token) {
+        String other = decodeToken(token).getClaim(userClaim).asString();
+        return JSONObject.parseObject(other, SSOUser.class);
+    }
 
-		return token.startsWith(SSOConfiguration.LOGO);
-	}
+    public static void logout(String token) {
 
-	private static String subLogo(String token) {
+        SSOJtiStore.remove(decodeToken(token).getId());
+    }
 
-		return token.substring(SSOConfiguration.LOGO.length(), token.length());
-	}
+    private JwtTokenHelper() {
+    }
 
-	private static DecodedJWT decodeToken(String token) {
+    private static String genJti() {
 
-		return JWT.decode(subLogo(token));
-	}
+        String jti = UUID.randomUUID().toString();
+        SSOJtiStore.add(jti);
+        return jti;
+    }
+
+    private static boolean checkLogo(String token) {
+
+        return token.startsWith(SSOConfiguration.LOGO);
+    }
+
+    private static String subLogo(String token) {
+
+        return token.substring(SSOConfiguration.LOGO.length());
+    }
+
+    private static DecodedJWT decodeToken(String token) {
+
+        return JWT.decode(subLogo(token));
+    }
 }

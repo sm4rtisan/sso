@@ -7,14 +7,15 @@ import java.lang.annotation.Target;
 
 /**
  * 在不需要验证的方法上加此注解
- * 	check 为true时校验
- * 	check 为false时不校验
- * @author yizhishaonian
+ * check 为true时校验
+ * check 为false时不校验
+ *
+ * @author yzsn
  */
-@Target({ ElementType.METHOD, ElementType.TYPE })
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SSOCheckToken {
-	
-	boolean check() default true;
-	
+
+    boolean check() default true;
+
 }

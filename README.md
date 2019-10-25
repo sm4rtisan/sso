@@ -15,7 +15,7 @@
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-      InterceptorRegistration addInterceptor = registry.addInterceptor(new SSOIntercepter());
+      InterceptorRegistration addInterceptor = registry.addInterceptor(new SSOInterceptor());
 
       // 拦截的配置
       addInterceptor.addPathPatterns("/**");

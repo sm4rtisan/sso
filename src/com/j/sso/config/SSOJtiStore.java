@@ -4,28 +4,29 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Jti容器
- * @author yizhishaonian
+ *
+ * @author yzsn
  */
 public class SSOJtiStore {
 
-	private static ConcurrentHashMap<String, Object> jtiStore = new ConcurrentHashMap<String, Object>();
+    private static ConcurrentHashMap<String, Object> jtiStore = new ConcurrentHashMap<String, Object>();
 
-	private static final Object value = new Object();
+    private static final Object value = new Object();
 
-	public static void add(String jti) {
+    public static void add(String jti) {
 
-		jtiStore.put(jti, value);
-	}
+        jtiStore.put(jti, value);
+    }
 
-	public static boolean contains(String jti) {
+    public static boolean contains(String jti) {
 
-		return jtiStore.containsKey(jti);
-	}
+        return jtiStore.containsKey(jti);
+    }
 
-	private SSOJtiStore() {
-	}
+    private SSOJtiStore() {
+    }
 
-	public static void remove(String jti) {
-		jtiStore.remove(jti);
-	}
+    public static void remove(String jti) {
+        jtiStore.remove(jti);
+    }
 }
